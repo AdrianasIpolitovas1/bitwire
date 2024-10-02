@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from web3 import Web3
+import os
 
 app = Flask(__name__)
 
@@ -38,11 +39,16 @@ def send_eth():
     }
 
     # Sign and send the transaction (requires private key)
-    private_key = 'YOUR_PRIVATE_KEY'  # Replace with your private key
+    private_key = os.environ.get('PRIVATE_KEY')  # Get the private key from environment variables
+    if private_key is None:
+        return jsonify({'error': 'Private key not found'}), 500  # Handle error if private key is not set
+
     signed_txn = web3.eth.account.sign_transaction(transaction, private_key)
     tx_hash = web3.eth.send_raw_transaction(signed_txn.rawTransaction)
 
     return jsonify({'tx_hash': web3.toHex(tx_hash)})
 
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    port = int(os.environ.get('PORT', 5000))  # Use the PORT environment variable for Heroku
+    app.run(host='0.0.0.0', port=port, debug=True)
